@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
-import { MaterialRequisitionNote, Item } from './material-requisition-note.model';
+import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 
 @Controller('mrns')
@@ -25,5 +25,10 @@ export class MaterialRequisitionNotesController {
     @Delete('/:id')
     deleteMaterialRequisitionNote(@Param('id') id: string): void {
         this.materialRequisitionNotesService.deleteMaterialRequisitionNote(id);
+    }
+
+    @Patch('/:id/status')
+    updateMaterialRequisitionNoteStatus(@Param('id') id: string, @Body('status') status: MaterialRequisitionNoteStatus): MaterialRequisitionNote {
+        return this.materialRequisitionNotesService.updateMaterialRequisitionNoteStatus(id, status);
     }
 }
