@@ -3,6 +3,7 @@ import { MaterialRequisitionNotesService } from './material-requisition-notes.se
 import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
+import { MaterialRequisitionNoteStatusValidationPipe } from './pipes/material-requisition-note-status-validation.pipe';
 
 @Controller('mrns')
 export class MaterialRequisitionNotesController {
@@ -33,7 +34,7 @@ export class MaterialRequisitionNotesController {
     }
 
     @Patch('/:id/status')
-    updateMaterialRequisitionNoteStatus(@Param('id') id: string, @Body('status') status: MaterialRequisitionNoteStatus): MaterialRequisitionNote {
+    updateMaterialRequisitionNoteStatus(@Param('id') id: string, @Body('status', MaterialRequisitionNoteStatusValidationPipe) status: MaterialRequisitionNoteStatus): MaterialRequisitionNote {
         return this.materialRequisitionNotesService.updateMaterialRequisitionNoteStatus(id, status);
     }
 }

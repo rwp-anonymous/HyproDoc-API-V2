@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import * as uuid from 'uuid/v1'
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
@@ -34,7 +34,13 @@ export class MaterialRequisitionNotesService {
     }
 
     getMaterialRequisitionNoteById(id: string): MaterialRequisitionNote {
-        return this.materialRequisitionNotes.find(materialRequisitionNote => materialRequisitionNote.id === id);
+        const found = this.materialRequisitionNotes.find(materialRequisitionNote => materialRequisitionNote.id === id);
+
+        if (!found) {
+            throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
+        }
+
+        return found;
     }
 
     createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
@@ -56,7 +62,8 @@ export class MaterialRequisitionNotesService {
     }
 
     deleteMaterialRequisitionNote(id: string): void {
-        this.materialRequisitionNotes = this.materialRequisitionNotes.filter(materialRequisitionNote => materialRequisitionNote.id !== id);
+        const found = this.getMaterialRequisitionNoteById(id);
+        this.materialRequisitionNotes = this.materialRequisitionNotes.filter(materialRequisitionNote => materialRequisitionNote.id !== found.id);
     }
 
     updateMaterialRequisitionNoteStatus(id: string, status: MaterialRequisitionNoteStatus): MaterialRequisitionNote {
