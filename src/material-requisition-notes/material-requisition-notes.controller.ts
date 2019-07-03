@@ -1,14 +1,18 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
 import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
+import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
 
 @Controller('mrns')
 export class MaterialRequisitionNotesController {
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
 
     @Get()
-    getAllMaterialRequisitionNotes(): MaterialRequisitionNote[] {
+    getMaterialRequisitionNotes(@Query() filterDto: GetMaterialRequisitionNotesFilterDto): MaterialRequisitionNote[] {
+        if (Object.keys(filterDto).length) {
+            return this.materialRequisitionNotesService.getMaterialRequisitionNotesWithFilters(filterDto);
+        }
         return this.materialRequisitionNotesService.getAllMaterialRequisitionNotes();
     }
 
