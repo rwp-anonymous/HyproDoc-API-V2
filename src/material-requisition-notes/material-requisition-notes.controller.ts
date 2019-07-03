@@ -1,6 +1,7 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
 import { MaterialRequisitionNote, Item } from './material-requisition-note.model';
+import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 
 @Controller('mrns')
 export class MaterialRequisitionNotesController {
@@ -11,16 +12,13 @@ export class MaterialRequisitionNotesController {
         return this.materialRequisitionNotesService.getAllMaterialRequisitionNotes();
     }
 
-    @Post()
-    createMaterialRequisitionNote(
-        @Body('mrnNo') mrnNo: string,
-        @Body('siteLocation') siteLocation: string,
-        @Body('requestDate') requestDate: Date,
-        @Body('requestedBy') requestedBy: string,
-        @Body('approvedBy') approvedBy: string,
-        @Body('items') items: Item[],
+    @Get('/:id')
+    getMaterialRequisitionNoteById(@Param('id') id: string): MaterialRequisitionNote {
+        return this.materialRequisitionNotesService.getMaterialRequisitionNoteById(id);
+    }
 
-    ): MaterialRequisitionNote {
-        return this.materialRequisitionNotesService.createMaterialRequisitionNote(mrnNo, siteLocation, requestDate, requestedBy, approvedBy, items);
+    @Post()
+    createMaterialRequisitionNote(@Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
+        return this.materialRequisitionNotesService.createMaterialRequisitionNote(createMaterialRequisitionNoteDto);
     }
 }

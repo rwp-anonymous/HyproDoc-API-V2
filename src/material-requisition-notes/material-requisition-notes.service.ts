@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import * as uuid from 'uuid/v1'
+import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 
 @Injectable()
 export class MaterialRequisitionNotesService {
@@ -10,7 +11,13 @@ export class MaterialRequisitionNotesService {
         return this.materialRequisitionNotes;
     }
 
-    createMaterialRequisitionNote(mrnNo: string, siteLocation: string, requestDate: Date, requestedBy: string, approvedBy: string, items: Item[]): MaterialRequisitionNote {
+    getMaterialRequisitionNoteById(id: string): MaterialRequisitionNote {
+        return this.materialRequisitionNotes.find(materialRequisitionNote => materialRequisitionNote.id === id);
+    }
+
+    createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
+        const { mrnNo, siteLocation, requestDate, requestedBy, approvedBy, items } = createMaterialRequisitionNoteDto;
+
         const materialRequisitionNote: MaterialRequisitionNote = {
             id: uuid(),
             mrnNo,
