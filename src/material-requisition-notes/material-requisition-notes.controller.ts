@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
 import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
@@ -22,6 +22,7 @@ export class MaterialRequisitionNotesController {
     }
 
     @Post()
+    @UsePipes(ValidationPipe)
     createMaterialRequisitionNote(@Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
         return this.materialRequisitionNotesService.createMaterialRequisitionNote(createMaterialRequisitionNoteDto);
     }
