@@ -32,4 +32,8 @@ export class MaterialRequisitionNotesService {
         this.materialRequisitionNotes.push(materialRequisitionNote);
         return materialRequisitionNote;
     }
+
+    deleteMaterialRequisitionNote(id: string): void {
+        this.materialRequisitionNotes = this.materialRequisitionNotes.filter(materialRequisitionNote => materialRequisitionNote.id !== id);
+    }
 }
