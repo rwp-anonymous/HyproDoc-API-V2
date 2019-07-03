@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { MaterialRequisitionNote } from './material-requisition-note.model';
 
 @Injectable()
 export class MaterialRequisitionNotesService {
-    private materialRequisitionNotes = [];
+    private materialRequisitionNotes: MaterialRequisitionNote[] = [];
 
-    getAllMaterialRequisitionNotes() {
+    getAllMaterialRequisitionNotes(): MaterialRequisitionNote[] {
         return this.materialRequisitionNotes;
     }
 }
