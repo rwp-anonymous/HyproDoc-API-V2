@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
+import { MaterialRequisitionNotesModule } from './material-requisition-notes/material-requisition-notes.module';
 
 @Module({
-  imports: []
+  imports: [MaterialRequisitionNotesModule]
 })
 export class AppModule { }
