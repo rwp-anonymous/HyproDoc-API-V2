@@ -10,7 +10,7 @@ export class MaterialRequisitionNotesController {
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
 
     @Get()
-    getMaterialRequisitionNotes(@Query() filterDto: GetMaterialRequisitionNotesFilterDto): MaterialRequisitionNote[] {
+    getMaterialRequisitionNotes(@Query(ValidationPipe) filterDto: GetMaterialRequisitionNotesFilterDto): MaterialRequisitionNote[] {
         if (Object.keys(filterDto).length) {
             return this.materialRequisitionNotesService.getMaterialRequisitionNotesWithFilters(filterDto);
         }
