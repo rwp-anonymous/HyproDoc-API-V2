@@ -12,6 +12,7 @@ export interface MaterialRequisitionNote {
     siteLocation: string,
     requestDate: Date;
     requestedBy: string;
+    approvedDate: Date;
     approvedBy: string;
     items: Item[];
     status: MaterialRequisitionNoteStatus

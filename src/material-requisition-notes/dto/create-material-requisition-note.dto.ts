@@ -20,6 +20,8 @@ export class CreateMaterialRequisitionNoteDto {
     @IsNotEmpty()
     requestedBy: string;
 
+    approvedDate: Date;
+
     approvedBy: string;
 
     @IsNotEmpty()

@@ -44,7 +44,7 @@ export class MaterialRequisitionNotesService {
     }
 
     createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
-        const { mrnNo, siteLocation, requestDate, requestedBy, approvedBy, items } = createMaterialRequisitionNoteDto;
+        const { mrnNo, siteLocation, requestDate, requestedBy, approvedDate, approvedBy, items } = createMaterialRequisitionNoteDto;
 
         const materialRequisitionNote: MaterialRequisitionNote = {
             id: uuid(),
@@ -52,6 +52,7 @@ export class MaterialRequisitionNotesService {
             siteLocation,
             requestDate,
             requestedBy,
+            approvedDate,
             approvedBy,
             items,
             status: MaterialRequisitionNoteStatus.OPEN
