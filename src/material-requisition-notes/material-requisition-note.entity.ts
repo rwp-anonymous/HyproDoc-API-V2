@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-import { MaterialRequisitionNoteStatus } from "./material-requisition-note.model";
+import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 
 @Entity()
 export class MaterialRequisitionNote extends BaseEntity {
@@ -18,13 +18,13 @@ export class MaterialRequisitionNote extends BaseEntity {
     @Column()
     requestedBy: string;
 
-    @Column()
+    @Column({ nullable: true })
     approvedDate: Date;
 
-    @Column()
-    approvedBy: Date;
+    @Column({ nullable: true })
+    approvedBy: string;
 
-    @Column({ array: true })
+    @Column()
     items: string;
 
     @Column()
