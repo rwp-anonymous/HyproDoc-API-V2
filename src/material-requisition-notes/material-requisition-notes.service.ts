@@ -1,40 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { MaterialRequisitionNote, Item, MaterialRequisitionNoteStatus } from './material-requisition-note.model';
-import * as uuid from 'uuid/v1'
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
+import { MaterialRequisitionNoteRepository } from './material-requisition-note.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { MaterialRequisitionNote } from './material-requisition-note.entity';
+import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
 
 @Injectable()
 export class MaterialRequisitionNotesService {
-    private materialRequisitionNotes: MaterialRequisitionNote[] = [];
+    constructor(
+        @InjectRepository(MaterialRequisitionNoteRepository)
+        private materialRequisitionNoteRepository: MaterialRequisitionNoteRepository
+    ) { }
 
-    getAllMaterialRequisitionNotes(): MaterialRequisitionNote[] {
-        return this.materialRequisitionNotes;
+    async getMaterialRequisitionNotes(filterDto: GetMaterialRequisitionNotesFilterDto): Promise<MaterialRequisitionNote[]> {
+        return this.materialRequisitionNoteRepository.getMaterialRequisitionNotes(filterDto);
     }
 
-    getMaterialRequisitionNotesWithFilters(filterDto: GetMaterialRequisitionNotesFilterDto): MaterialRequisitionNote[] {
-        const { status, search } = filterDto;
-
-        let materialRequisitionNotes = this.getAllMaterialRequisitionNotes();
-
-        if (status) {
-            materialRequisitionNotes = materialRequisitionNotes.filter(materialRequisitionNote => materialRequisitionNote.status === status);
-        }
-
-        if (search) {
-            materialRequisitionNotes = materialRequisitionNotes.filter(materialRequisitionNote =>
-                materialRequisitionNote.mrnNo.includes(search) ||
-                materialRequisitionNote.requestedBy.includes(search) ||
-                materialRequisitionNote.approvedBy.includes(search) ||
-                materialRequisitionNote.siteLocation.includes(search)
-            )
-        }
-
-        return materialRequisitionNotes;
-    }
-
-    getMaterialRequisitionNoteById(id: string): MaterialRequisitionNote {
-        const found = this.materialRequisitionNotes.find(materialRequisitionNote => materialRequisitionNote.id === id);
+    async getMaterialRequisitionNoteById(id: number): Promise<MaterialRequisitionNote> {
+        const found = await this.materialRequisitionNoteRepository.findOne(id);
 
         if (!found) {
             throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
@@ -43,33 +27,22 @@ export class MaterialRequisitionNotesService {
         return found;
     }
 
-    createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): MaterialRequisitionNote {
-        const { mrnNo, siteLocation, requestDate, requestedBy, approvedDate, approvedBy, items } = createMaterialRequisitionNoteDto;
+    async createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): Promise<MaterialRequisitionNote> {
+        return this.materialRequisitionNoteRepository.createMaterialRequisitionNote(createMaterialRequisitionNoteDto);
+    }
 
-        const materialRequisitionNote: MaterialRequisitionNote = {
-            id: uuid(),
-            mrnNo,
-            siteLocation,
-            requestDate,
-            requestedBy,
-            approvedDate,
-            approvedBy,
-            items,
-            status: MaterialRequisitionNoteStatus.OPEN
+    async deleteMaterialRequisitionNote(id: number): Promise<void> {
+        const result = await this.materialRequisitionNoteRepository.delete(id);
+
+        if (result.affected === 0) {
+            throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
         }
-
-        this.materialRequisitionNotes.push(materialRequisitionNote);
-        return materialRequisitionNote;
     }
 
-    deleteMaterialRequisitionNote(id: string): void {
-        const found = this.getMaterialRequisitionNoteById(id);
-        this.materialRequisitionNotes = this.materialRequisitionNotes.filter(materialRequisitionNote => materialRequisitionNote.id !== found.id);
-    }
-
-    updateMaterialRequisitionNoteStatus(id: string, status: MaterialRequisitionNoteStatus): MaterialRequisitionNote {
-        const materialRequisitionNote = this.getMaterialRequisitionNoteById(id);
+    async updateMaterialRequisitionNoteStatus(id: number, status: MaterialRequisitionNoteStatus): Promise<MaterialRequisitionNote> {
+        const materialRequisitionNote = await this.getMaterialRequisitionNoteById(id);
         materialRequisitionNote.status = status;
+        await materialRequisitionNote.save();
         return materialRequisitionNote;
     }
 }

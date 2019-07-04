@@ -1,5 +1,5 @@
-import { MaterialRequisitionNoteStatus } from "../material-requisition-note.model";
 import { IsOptional, IsIn, IsNotEmpty } from "class-validator";
+import { MaterialRequisitionNoteStatus } from "../material-requisition-note-status.enum";
 
 export class GetMaterialRequisitionNotesFilterDto {
     @IsOptional()

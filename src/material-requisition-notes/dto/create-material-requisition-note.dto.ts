@@ -1,12 +1,5 @@
-import { IsNotEmpty } from 'class-validator'
+import { IsNotEmpty } from 'class-validator';
 
-export class Item {
-    itemNo: string;
-    itemName: string;
-    unit: string;
-    qty: number;
-    remarks: string;
-}
 export class CreateMaterialRequisitionNoteDto {
     @IsNotEmpty()
     mrnNo: string;
@@ -25,5 +18,5 @@ export class CreateMaterialRequisitionNoteDto {
     approvedBy: string;
 
     @IsNotEmpty()
-    items: Item[];
+    items: string;
 }

@@ -1,5 +1,5 @@
 import { PipeTransform, BadRequestException } from "@nestjs/common";
-import { MaterialRequisitionNoteStatus } from "../material-requisition-note.model";
+import { MaterialRequisitionNoteStatus } from "../material-requisition-note-status.enum";
 
 export class MaterialRequisitionNoteStatusValidationPipe implements PipeTransform {
     readonly allowedStatuses = [
