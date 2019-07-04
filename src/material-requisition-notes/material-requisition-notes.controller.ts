@@ -5,7 +5,9 @@ import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisi
 import { MaterialRequisitionNoteStatusValidationPipe } from './pipes/material-requisition-note-status-validation.pipe';
 import { MaterialRequisitionNote } from './material-requisition-note.entity';
 import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
+import { ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('Material Requisition Notes')
 @Controller('mrns')
 export class MaterialRequisitionNotesController {
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
