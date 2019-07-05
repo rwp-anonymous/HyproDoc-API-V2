@@ -1,16 +1,29 @@
 import { Repository, EntityRepository } from "typeorm";
 import { User } from "./user.entity";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
+import { ConflictException, InternalServerErrorException } from "@nestjs/common";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
     async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-        const { username, password } = authCredentialsDto;
+        const { email, firstName, lastName, password, role, avatarUrl } = authCredentialsDto;
 
         const user = new User();
-        user.username = username;
+        user.email = email;
+        user.firstName = firstName;
+        user.lastName = lastName;
         user.password = password;
+        user.role = role;
+        user.avatarUrl = avatarUrl;
 
-        await user.save();
+        try {
+            await user.save();
+        } catch (error) {
+            if (error.code === '23505') {   // duplicate email
+                throw new ConflictException('Email already exists');
+            } else {
+                throw new InternalServerErrorException();
+            }
+        }
     }
 }
