@@ -1,4 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
+import * as bcrypt from 'bcrypt';
 import { UserRoles } from "./user-roles.enum";
 
 @Entity()
@@ -20,11 +21,12 @@ export class User extends BaseEntity {
     password: string;
 
     @Column()
-    salt: string;
-
-    @Column()
     role: UserRoles;
 
     @Column({ nullable: true })
-    avatarUrl: string
+    avatarUrl: string;
+
+    async validatePassword(password: string): Promise<boolean> {
+        return await bcrypt.compare(password, this.password);
+    }
 }
