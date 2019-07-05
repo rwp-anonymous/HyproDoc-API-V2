@@ -1,14 +1,17 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, UseGuards } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
 import { MaterialRequisitionNoteStatusValidationPipe } from './pipes/material-requisition-note-status-validation.pipe';
 import { MaterialRequisitionNote } from './material-requisition-note.entity';
 import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
 @ApiUseTags('Material Requisition Notes')
+@ApiBearerAuth()
 @Controller('mrns')
+@UseGuards(AuthGuard())
 export class MaterialRequisitionNotesController {
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
 

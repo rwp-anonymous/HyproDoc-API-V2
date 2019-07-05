@@ -14,6 +14,7 @@ async function bootstrap() {
     .addTag('hyprodoc')
     .setSchemes('http', 'https')
     .setBasePath('api/v2')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api/v2/docs', app, document);
