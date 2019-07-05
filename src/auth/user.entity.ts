@@ -20,6 +20,9 @@ export class User extends BaseEntity {
     password: string;
 
     @Column()
+    salt: string;
+
+    @Column()
     role: UserRoles;
 
     @Column({ nullable: true })
