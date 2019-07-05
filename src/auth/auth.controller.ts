@@ -4,7 +4,9 @@ import { AuthService } from './auth.service';
 import { UserRolesValidationPipe } from './pipes/user-roles-validation.pipe';
 import { UserRoles } from './user-roles.enum';
 import { SignInCredentialsDto } from './dto/signin-credentials.dto';
+import { ApiUseTags } from '@nestjs/swagger';
 
+@ApiUseTags('Auth')
 @Controller('auth')
 export class AuthController {
     constructor(
