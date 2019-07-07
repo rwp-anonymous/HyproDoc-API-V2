@@ -1,8 +1,9 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique } from "typeorm";
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 import { User } from "../auth/user.entity";
 
 @Entity()
+@Unique(['mrnNo'])
 export class MaterialRequisitionNote extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number;
