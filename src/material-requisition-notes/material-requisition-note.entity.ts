@@ -1,5 +1,6 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
+import { User } from "../auth/user.entity";
 
 @Entity()
 export class MaterialRequisitionNote extends BaseEntity {
@@ -15,14 +16,14 @@ export class MaterialRequisitionNote extends BaseEntity {
     @Column()
     requestDate: Date;
 
-    @Column()
-    requestedBy: string;
+    @ManyToOne(type => User, user => user.requestedMaterialRequisitionNotes, { eager: false })
+    requestedBy: User;
 
     @Column({ nullable: true })
     approvedDate: Date;
 
-    @Column({ nullable: true })
-    approvedBy: string;
+    @ManyToOne(type => User, user => user.approvedMaterialRequisitionNotes, { eager: false })
+    approvedBy: User;
 
     @Column()
     items: string;
