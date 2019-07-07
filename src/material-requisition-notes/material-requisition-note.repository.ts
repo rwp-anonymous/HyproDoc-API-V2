@@ -3,6 +3,7 @@ import { MaterialRequisitionNote } from "./material-requisition-note.entity";
 import { CreateMaterialRequisitionNoteDto } from "./dto/create-material-requisition-note.dto";
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 import { GetMaterialRequisitionNotesFilterDto } from "./dto/get-material-requisition-notes-filter.dto";
+import { User } from "../auth/user.entity";
 
 @EntityRepository(MaterialRequisitionNote)
 export class MaterialRequisitionNoteRepository extends Repository<MaterialRequisitionNote> {
@@ -22,20 +23,23 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         return materialRequisitionNotes;
     }
 
-    async createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): Promise<MaterialRequisitionNote> {
-        const { mrnNo, siteLocation, requestDate, requestedBy, approvedDate, approvedBy, items } = createMaterialRequisitionNoteDto;
+    async createMaterialRequisitionNote(
+        createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
+        user: User
+    ): Promise<MaterialRequisitionNote> {
+        const { mrnNo, siteLocation, items } = createMaterialRequisitionNoteDto;
 
         const materialRequisitionNote = new MaterialRequisitionNote();
         materialRequisitionNote.mrnNo = mrnNo;
         materialRequisitionNote.siteLocation = siteLocation;
-        materialRequisitionNote.requestDate = requestDate;
-        materialRequisitionNote.requestedBy = requestedBy;
-        materialRequisitionNote.approvedDate = approvedDate;
-        materialRequisitionNote.approvedBy = approvedBy;
+        materialRequisitionNote.requestDate = new Date();
+        materialRequisitionNote.requestedBy = user;
         materialRequisitionNote.items = items;
-        materialRequisitionNote.status = MaterialRequisitionNoteStatus.OPEN;
+        materialRequisitionNote.status = MaterialRequisitionNoteStatus.REQUESTED;
 
         await materialRequisitionNote.save();
+
+        delete materialRequisitionNote.requestedBy;
 
         return materialRequisitionNote;
     }

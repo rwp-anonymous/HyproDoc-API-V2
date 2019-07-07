@@ -7,6 +7,8 @@ import { MaterialRequisitionNote } from './material-requisition-note.entity';
 import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
 import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+import { User } from '../auth/user.entity';
+import { GetUser } from '../auth/get-user.decorator';
 
 @ApiUseTags('Material Requisition Notes')
 @ApiBearerAuth()
@@ -27,8 +29,11 @@ export class MaterialRequisitionNotesController {
 
     @Post()
     @UsePipes(ValidationPipe)
-    createMaterialRequisitionNote(@Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): Promise<MaterialRequisitionNote> {
-        return this.materialRequisitionNotesService.createMaterialRequisitionNote(createMaterialRequisitionNoteDto);
+    createMaterialRequisitionNote(
+        @Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
+        @GetUser() user: User
+    ): Promise<MaterialRequisitionNote> {
+        return this.materialRequisitionNotesService.createMaterialRequisitionNote(createMaterialRequisitionNoteDto, user);
     }
 
     @Delete('/:id')
@@ -39,8 +44,9 @@ export class MaterialRequisitionNotesController {
     @Patch('/:id/status')
     updateMaterialRequisitionNoteStatus(
         @Param('id', ParseIntPipe) id: number,
-        @Body('status', MaterialRequisitionNoteStatusValidationPipe) status: MaterialRequisitionNoteStatus
+        @Body('status', MaterialRequisitionNoteStatusValidationPipe) status: MaterialRequisitionNoteStatus,
+        @GetUser() user: User
     ): Promise<MaterialRequisitionNote> {
-        return this.materialRequisitionNotesService.updateMaterialRequisitionNoteStatus(id, status);
+        return this.materialRequisitionNotesService.updateMaterialRequisitionNoteStatus(id, status, user);
     }
 }

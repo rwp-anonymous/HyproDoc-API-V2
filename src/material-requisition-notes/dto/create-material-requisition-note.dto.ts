@@ -12,19 +12,5 @@ export class CreateMaterialRequisitionNoteDto {
 
     @ApiModelProperty()
     @IsNotEmpty()
-    requestDate: Date;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
-    requestedBy: string;
-
-    @ApiModelProperty()
-    approvedDate: Date;
-
-    @ApiModelProperty()
-    approvedBy: string;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
     items: string;
 }

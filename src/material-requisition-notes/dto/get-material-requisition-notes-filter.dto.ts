@@ -3,7 +3,7 @@ import { MaterialRequisitionNoteStatus } from "../material-requisition-note-stat
 
 export class GetMaterialRequisitionNotesFilterDto {
     @IsOptional()
-    @IsIn([MaterialRequisitionNoteStatus.OPEN, MaterialRequisitionNoteStatus.IN_PROGRESS, MaterialRequisitionNoteStatus.DONE])
+    @IsIn([MaterialRequisitionNoteStatus.REQUESTED, MaterialRequisitionNoteStatus.APPROVED])
     status: MaterialRequisitionNoteStatus;
 
     @IsOptional()

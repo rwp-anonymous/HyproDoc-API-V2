@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
 import { MaterialRequisitionNoteRepository } from './material-requisition-note.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MaterialRequisitionNote } from './material-requisition-note.entity';
 import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
+import { User } from '../auth/user.entity';
 
 @Injectable()
 export class MaterialRequisitionNotesService {
@@ -27,8 +28,11 @@ export class MaterialRequisitionNotesService {
         return found;
     }
 
-    async createMaterialRequisitionNote(createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto): Promise<MaterialRequisitionNote> {
-        return this.materialRequisitionNoteRepository.createMaterialRequisitionNote(createMaterialRequisitionNoteDto);
+    async createMaterialRequisitionNote(
+        createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
+        user: User
+    ): Promise<MaterialRequisitionNote> {
+        return this.materialRequisitionNoteRepository.createMaterialRequisitionNote(createMaterialRequisitionNoteDto, user);
     }
 
     async deleteMaterialRequisitionNote(id: number): Promise<void> {
@@ -39,10 +43,19 @@ export class MaterialRequisitionNotesService {
         }
     }
 
-    async updateMaterialRequisitionNoteStatus(id: number, status: MaterialRequisitionNoteStatus): Promise<MaterialRequisitionNote> {
+    async updateMaterialRequisitionNoteStatus(id: number, status: MaterialRequisitionNoteStatus, user: User): Promise<MaterialRequisitionNote> {
         const materialRequisitionNote = await this.getMaterialRequisitionNoteById(id);
+
+        if (materialRequisitionNote.status === MaterialRequisitionNoteStatus.APPROVED) {
+            throw new ConflictException(`Material Requisition Note with id ${id} already been approved`);
+        }
         materialRequisitionNote.status = status;
+        materialRequisitionNote.approvedBy = user;
+        materialRequisitionNote.approvedDate = new Date();
         await materialRequisitionNote.save();
+
+        delete materialRequisitionNote.approvedBy;
+
         return materialRequisitionNote;
     }
 }
