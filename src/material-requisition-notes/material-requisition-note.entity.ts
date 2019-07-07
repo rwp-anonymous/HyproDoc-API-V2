@@ -19,11 +19,17 @@ export class MaterialRequisitionNote extends BaseEntity {
     @ManyToOne(type => User, user => user.requestedMaterialRequisitionNotes, { eager: false })
     requestedBy: User;
 
+    @Column()
+    requestedById: number;
+
     @Column({ nullable: true })
     approvedDate: Date;
 
     @ManyToOne(type => User, user => user.approvedMaterialRequisitionNotes, { eager: false })
     approvedBy: User;
+
+    @Column({ nullable: true })
+    approvedById: User;
 
     @Column()
     items: string;

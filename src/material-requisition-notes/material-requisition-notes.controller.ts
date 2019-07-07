@@ -18,8 +18,11 @@ export class MaterialRequisitionNotesController {
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
 
     @Get()
-    getMaterialRequisitionNotes(@Query(ValidationPipe) filterDto: GetMaterialRequisitionNotesFilterDto): Promise<MaterialRequisitionNote[]> {
-        return this.materialRequisitionNotesService.getMaterialRequisitionNotes(filterDto);
+    getMaterialRequisitionNotes(
+        @Query(ValidationPipe) filterDto: GetMaterialRequisitionNotesFilterDto,
+        @GetUser() user: User
+    ): Promise<MaterialRequisitionNote[]> {
+        return this.materialRequisitionNotesService.getMaterialRequisitionNotes(filterDto, user);
     }
 
     @Get('/:id')

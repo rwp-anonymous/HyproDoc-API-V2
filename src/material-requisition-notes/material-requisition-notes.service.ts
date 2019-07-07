@@ -14,8 +14,11 @@ export class MaterialRequisitionNotesService {
         private materialRequisitionNoteRepository: MaterialRequisitionNoteRepository
     ) { }
 
-    async getMaterialRequisitionNotes(filterDto: GetMaterialRequisitionNotesFilterDto): Promise<MaterialRequisitionNote[]> {
-        return this.materialRequisitionNoteRepository.getMaterialRequisitionNotes(filterDto);
+    async getMaterialRequisitionNotes(
+        filterDto: GetMaterialRequisitionNotesFilterDto,
+        user: User
+    ): Promise<MaterialRequisitionNote[]> {
+        return this.materialRequisitionNoteRepository.getMaterialRequisitionNotes(filterDto, user);
     }
 
     async getMaterialRequisitionNoteById(id: number): Promise<MaterialRequisitionNote> {

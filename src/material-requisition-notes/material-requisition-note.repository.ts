@@ -7,9 +7,14 @@ import { User } from "../auth/user.entity";
 
 @EntityRepository(MaterialRequisitionNote)
 export class MaterialRequisitionNoteRepository extends Repository<MaterialRequisitionNote> {
-    async getMaterialRequisitionNotes(filterDto: GetMaterialRequisitionNotesFilterDto): Promise<MaterialRequisitionNote[]> {
+    async getMaterialRequisitionNotes(
+        filterDto: GetMaterialRequisitionNotesFilterDto,
+        user: User
+    ): Promise<MaterialRequisitionNote[]> {
         const { status, search } = filterDto;
         const query = this.createQueryBuilder('materialRequisitionNote');
+
+        query.where('(materialRequisitionNote.requestedById = :userId OR materialRequisitionNote.approvedById = :userId)', { userId: user.id })
 
         if (status) {
             query.andWhere('materialRequisitionNote.status = :status', { status })
