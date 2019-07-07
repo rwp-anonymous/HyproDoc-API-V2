@@ -25,6 +25,11 @@ export class MaterialRequisitionNotesController {
         return this.materialRequisitionNotesService.getMaterialRequisitionNotes(filterDto, user);
     }
 
+    @Get('/number')
+    generateMaterialRequisitionNoteNumber(): Promise<string> {
+        return this.materialRequisitionNotesService.generateMaterialRequisitionNoteNumber();
+    }
+
     @Get('/:id')
     getMaterialRequisitionNoteById(
         @Param('id', ParseIntPipe) id: number,

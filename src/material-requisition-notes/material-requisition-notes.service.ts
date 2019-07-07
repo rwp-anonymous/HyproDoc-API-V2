@@ -82,4 +82,14 @@ export class MaterialRequisitionNotesService {
 
         return materialRequisitionNote;
     }
+
+    async generateMaterialRequisitionNoteNumber(): Promise<string> {
+        const [lastMaterialRequisitionNote] = await this.materialRequisitionNoteRepository.find({
+            order: { id: "DESC" },
+            take: 1
+        });
+
+        let lastNumber = parseInt(lastMaterialRequisitionNote.mrnNo.replace(/^\D+/g, ''));
+        return `mrn-${lastNumber + 1}`
+    }
 }
