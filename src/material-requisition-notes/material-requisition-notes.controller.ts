@@ -43,8 +43,11 @@ export class MaterialRequisitionNotesController {
     }
 
     @Delete('/:id')
-    deleteMaterialRequisitionNote(@Param('id', ParseIntPipe) id: number): Promise<void> {
-        return this.materialRequisitionNotesService.deleteMaterialRequisitionNote(id);
+    deleteMaterialRequisitionNote(
+        @Param('id', ParseIntPipe) id: number,
+        @GetUser() user: User
+    ): Promise<void> {
+        return this.materialRequisitionNotesService.deleteMaterialRequisitionNote(id, user);
     }
 
     @Patch('/:id/status')

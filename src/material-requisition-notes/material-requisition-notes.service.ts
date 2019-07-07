@@ -54,10 +54,15 @@ export class MaterialRequisitionNotesService {
         return this.materialRequisitionNoteRepository.createMaterialRequisitionNote(createMaterialRequisitionNoteDto, user);
     }
 
-    async deleteMaterialRequisitionNote(id: number): Promise<void> {
-        const result = await this.materialRequisitionNoteRepository.delete(id);
+    async deleteMaterialRequisitionNote(id: number, user: User): Promise<void> {
+        let result;
+        if (user.role === UserRoles.ADMIN) {
+            result = await this.materialRequisitionNoteRepository.delete(id);
+        } else {
+            throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
+        }
 
-        if (result.affected === 0) {
+        if (result && result.affected === 0) {
             throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
         }
     }
