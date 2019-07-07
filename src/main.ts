@@ -1,8 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { Logger } from '@nestjs/common';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
+  /* Logger Setup */
+  const logger = new Logger('bootstrap');
+  /* End of Logger Setup */
+
   const app = await NestFactory.create(AppModule);
   app.setGlobalPrefix('api/v2');
 
@@ -22,6 +27,9 @@ async function bootstrap() {
 
   app.enableCors();
 
-  await app.listen(3000);
+  const port = 3000;
+  await app.listen(port);
+
+  logger.log(`Application listening on port ${port}`);
 }
 bootstrap();

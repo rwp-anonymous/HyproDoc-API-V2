@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Patch, Query, UsePipes, ValidationPipe, ParseIntPipe, UseGuards, Logger } from '@nestjs/common';
 import { MaterialRequisitionNotesService } from './material-requisition-notes.service';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
@@ -15,6 +15,8 @@ import { GetUser } from '../auth/get-user.decorator';
 @Controller('mrns')
 @UseGuards(AuthGuard())
 export class MaterialRequisitionNotesController {
+    private logger = new Logger('MaterialRequisitionNotesController');
+
     constructor(private materialRequisitionNotesService: MaterialRequisitionNotesService) { }
 
     @Get()
@@ -22,6 +24,7 @@ export class MaterialRequisitionNotesController {
         @Query(ValidationPipe) filterDto: GetMaterialRequisitionNotesFilterDto,
         @GetUser() user: User
     ): Promise<MaterialRequisitionNote[]> {
+        this.logger.verbose(`User "${user.email}" retriving all material requisition notes. Filters: ${JSON.stringify(filterDto)}`)
         return this.materialRequisitionNotesService.getMaterialRequisitionNotes(filterDto, user);
     }
 
@@ -44,6 +47,7 @@ export class MaterialRequisitionNotesController {
         @Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
         @GetUser() user: User
     ): Promise<MaterialRequisitionNote> {
+        this.logger.verbose(`User "${user.email}" creating a new material requisition note. Data: ${JSON.stringify(createMaterialRequisitionNoteDto)}`)
         return this.materialRequisitionNotesService.createMaterialRequisitionNote(createMaterialRequisitionNoteDto, user);
     }
 

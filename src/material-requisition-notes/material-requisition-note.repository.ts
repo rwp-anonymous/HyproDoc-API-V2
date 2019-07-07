@@ -5,9 +5,12 @@ import { MaterialRequisitionNoteStatus } from "./material-requisition-note-statu
 import { GetMaterialRequisitionNotesFilterDto } from "./dto/get-material-requisition-notes-filter.dto";
 import { User } from "../auth/user.entity";
 import { UserRoles } from "../auth/user-roles.enum";
+import { ConflictException, InternalServerErrorException, Logger } from "@nestjs/common";
 
 @EntityRepository(MaterialRequisitionNote)
 export class MaterialRequisitionNoteRepository extends Repository<MaterialRequisitionNote> {
+    private logger = new Logger('MaterialRequisitionNoteRepository');
+
     async getMaterialRequisitionNotes(
         filterDto: GetMaterialRequisitionNotesFilterDto,
         user: User
@@ -27,8 +30,13 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
             query.andWhere('(materialRequisitionNote.mrnNo LIKE :search OR materialRequisitionNote.siteLocation LIKE :search)', { search: `%${search}%` })
         }
 
-        const materialRequisitionNotes = await query.getMany();
-        return materialRequisitionNotes;
+        try {
+            const materialRequisitionNotes = await query.getMany();
+            return materialRequisitionNotes;
+        } catch (error) {
+            this.logger.error(`Failed to get material requisition notes for user "${user.email}". Filters: ${JSON.stringify(filterDto)}`, error.stack);
+            throw new InternalServerErrorException();
+        }
     }
 
     async createMaterialRequisitionNote(
@@ -45,7 +53,19 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         materialRequisitionNote.items = items;
         materialRequisitionNote.status = MaterialRequisitionNoteStatus.REQUESTED;
 
-        await materialRequisitionNote.save();
+        try {
+            await materialRequisitionNote.save();
+        } catch (error) {
+            this.logger.error(`Failed to create a  material requisition note for user "${user.email}". DTO: ${JSON.stringify(createMaterialRequisitionNoteDto)}`, error.stack);
+
+            if (error.code === '23505') {   // duplicate mrn
+                throw new ConflictException('Duplicate MRN Number');
+            } else {
+                throw new InternalServerErrorException();
+            }
+        }
+
+        // await materialRequisitionNote.save();
 
         delete materialRequisitionNote.requestedBy;
 
