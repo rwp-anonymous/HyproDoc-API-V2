@@ -4,6 +4,7 @@ import { CreateMaterialRequisitionNoteDto } from "./dto/create-material-requisit
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 import { GetMaterialRequisitionNotesFilterDto } from "./dto/get-material-requisition-notes-filter.dto";
 import { User } from "../auth/user.entity";
+import { UserRoles } from "../auth/user-roles.enum";
 
 @EntityRepository(MaterialRequisitionNote)
 export class MaterialRequisitionNoteRepository extends Repository<MaterialRequisitionNote> {
@@ -14,7 +15,9 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         const { status, search } = filterDto;
         const query = this.createQueryBuilder('materialRequisitionNote');
 
-        query.where('(materialRequisitionNote.requestedById = :userId OR materialRequisitionNote.approvedById = :userId)', { userId: user.id })
+        if (user.role !== UserRoles.ADMIN) {
+            query.where('(materialRequisitionNote.requestedById = :userId OR materialRequisitionNote.approvedById = :userId)', { userId: user.id })
+        }
 
         if (status) {
             query.andWhere('materialRequisitionNote.status = :status', { status })

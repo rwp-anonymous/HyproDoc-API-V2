@@ -26,8 +26,11 @@ export class MaterialRequisitionNotesController {
     }
 
     @Get('/:id')
-    getMaterialRequisitionNoteById(@Param('id', ParseIntPipe) id: number): Promise<MaterialRequisitionNote> {
-        return this.materialRequisitionNotesService.getMaterialRequisitionNoteById(id);
+    getMaterialRequisitionNoteById(
+        @Param('id', ParseIntPipe) id: number,
+        @GetUser() user: User
+    ): Promise<MaterialRequisitionNote> {
+        return this.materialRequisitionNotesService.getMaterialRequisitionNoteById(id, user);
     }
 
     @Post()

@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MaterialRequisitionNote } from './material-requisition-note.entity';
 import { MaterialRequisitionNoteStatus } from './material-requisition-note-status.enum';
 import { User } from '../auth/user.entity';
+import { UserRoles } from '../auth/user-roles.enum';
 
 @Injectable()
 export class MaterialRequisitionNotesService {
@@ -21,8 +22,23 @@ export class MaterialRequisitionNotesService {
         return this.materialRequisitionNoteRepository.getMaterialRequisitionNotes(filterDto, user);
     }
 
-    async getMaterialRequisitionNoteById(id: number): Promise<MaterialRequisitionNote> {
-        const found = await this.materialRequisitionNoteRepository.findOne(id);
+    async getMaterialRequisitionNoteById(
+        id: number,
+        user: User,
+        isUpdateRequest: boolean = false
+    ): Promise<MaterialRequisitionNote> {
+        let found;
+
+        if (isUpdateRequest || user.role === UserRoles.ADMIN) {
+            found = await this.materialRequisitionNoteRepository.findOne(id);
+        } else {
+            await this.materialRequisitionNoteRepository.findOne({
+                where: [
+                    { id, requestedById: user.id },
+                    { id, approvedById: user.id },
+                ]
+            });
+        }
 
         if (!found) {
             throw new NotFoundException(`Material Requisition Note with ID ${id} not found`);
@@ -47,7 +63,7 @@ export class MaterialRequisitionNotesService {
     }
 
     async updateMaterialRequisitionNoteStatus(id: number, status: MaterialRequisitionNoteStatus, user: User): Promise<MaterialRequisitionNote> {
-        const materialRequisitionNote = await this.getMaterialRequisitionNoteById(id);
+        const materialRequisitionNote = await this.getMaterialRequisitionNoteById(id, user, true);
 
         if (materialRequisitionNote.status === MaterialRequisitionNoteStatus.APPROVED) {
             throw new ConflictException(`Material Requisition Note with id ${id} already been approved`);
