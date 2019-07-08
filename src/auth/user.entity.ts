@@ -1,5 +1,5 @@
 import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from "typeorm";
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import { UserRoles } from "./user-roles.enum";
 import { MaterialRequisitionNote } from "../material-requisition-notes/material-requisition-note.entity";
 import { Item } from "../items/item.entity";
