@@ -31,7 +31,9 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         }
 
         try {
-            const materialRequisitionNotes = await query.getMany();
+            const materialRequisitionNotes = await query
+                .leftJoinAndSelect("materialRequisitionNote.items", "item")
+                .getMany();
             return materialRequisitionNotes;
         } catch (error) {
             this.logger.error(`Failed to get material requisition notes for user "${user.email}". Filters: ${JSON.stringify(filterDto)}`, error.stack);
