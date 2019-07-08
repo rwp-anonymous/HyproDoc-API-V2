@@ -1,6 +1,8 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany } from "typeorm";
 import * as bcrypt from 'bcrypt';
 import { UserRoles } from "./user-roles.enum";
+import { MaterialRequisitionNote } from "../material-requisition-notes/material-requisition-note.entity";
+import { Item } from "../items/item.entity";
 
 @Entity()
 @Unique(['email'])
@@ -25,6 +27,15 @@ export class User extends BaseEntity {
 
     @Column({ nullable: true })
     avatarUrl: string;
+
+    @OneToMany(type => MaterialRequisitionNote, materialRequisitionNote => materialRequisitionNote.requestedBy, { eager: true })
+    requestedMaterialRequisitionNotes: MaterialRequisitionNote[];
+
+    @OneToMany(type => MaterialRequisitionNote, materialRequisitionNote => materialRequisitionNote.approvedBy, { eager: true })
+    approvedMaterialRequisitionNotes: MaterialRequisitionNote[];
+
+    @OneToMany(type => Item, item => item.createdBy, { eager: true })
+    createdItems: Item[];
 
     async validatePassword(password: string): Promise<boolean> {
         return await bcrypt.compare(password, this.password);

@@ -3,9 +3,8 @@ import { MaterialRequisitionNoteStatus } from "../material-requisition-note-stat
 
 export class MaterialRequisitionNoteStatusValidationPipe implements PipeTransform {
     readonly allowedStatuses = [
-        MaterialRequisitionNoteStatus.OPEN,
-        MaterialRequisitionNoteStatus.IN_PROGRESS,
-        MaterialRequisitionNoteStatus.DONE,
+        MaterialRequisitionNoteStatus.REQUESTED,
+        MaterialRequisitionNoteStatus.APPROVED
     ];
 
     transform(value: any) {

@@ -1,5 +1,6 @@
 import { IsNotEmpty } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { Item } from '../../items/item.entity';
 
 export class CreateMaterialRequisitionNoteDto {
     @ApiModelProperty()
@@ -12,19 +13,5 @@ export class CreateMaterialRequisitionNoteDto {
 
     @ApiModelProperty()
     @IsNotEmpty()
-    requestDate: Date;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
-    requestedBy: string;
-
-    @ApiModelProperty()
-    approvedDate: Date;
-
-    @ApiModelProperty()
-    approvedBy: string;
-
-    @ApiModelProperty()
-    @IsNotEmpty()
-    items: string;
+    items: Item[];
 }
