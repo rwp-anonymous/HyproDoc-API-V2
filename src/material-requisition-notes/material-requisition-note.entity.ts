@@ -1,6 +1,7 @@
-import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique } from "typeorm";
+import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique, ManyToMany, JoinTable } from "typeorm";
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 import { User } from "../auth/user.entity";
+import { Item } from "../items/item.entity";
 
 @Entity()
 @Unique(['mrnNo'])
@@ -30,10 +31,11 @@ export class MaterialRequisitionNote extends BaseEntity {
     approvedBy: User;
 
     @Column({ nullable: true })
-    approvedById: User;
+    approvedById: number;
 
-    @Column()
-    items: string;
+    @ManyToMany(type => Item)
+    @JoinTable()
+    items: Item[];
 
     @Column()
     status: MaterialRequisitionNoteStatus;
