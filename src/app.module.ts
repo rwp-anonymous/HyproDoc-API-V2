@@ -4,13 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typeOrmConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { ItemsModule } from './items/items.module';
+import { MaterialRequisitionNoteItemsModule } from './material-requisition-note-items/material-requisition-note-items.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     MaterialRequisitionNotesModule,
     AuthModule,
-    ItemsModule
+    ItemsModule,
+    MaterialRequisitionNoteItemsModule
   ]
 })
 export class AppModule { }
