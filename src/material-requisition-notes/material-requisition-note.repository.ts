@@ -33,8 +33,12 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         try {
             const materialRequisitionNotes = await query
                 .leftJoinAndSelect("materialRequisitionNote.items", "item")
+                .innerJoinAndSelect("materialRequisitionNote.requestedBy", "user")
                 .getMany();
-            return materialRequisitionNotes;
+
+            const newMaterialRequisitionNotes = materialRequisitionNotes.map(({ requestedBy: { password, ...restOfObj }, ...restOfNote }) => Object.assign({ ...restOfNote, requestedBy: restOfObj }))
+
+            return newMaterialRequisitionNotes;
         } catch (error) {
             this.logger.error(`Failed to get material requisition notes for user "${user.email}". Filters: ${JSON.stringify(filterDto)}`, error.stack);
             throw new InternalServerErrorException();
@@ -66,8 +70,6 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
                 throw new InternalServerErrorException();
             }
         }
-
-        // await materialRequisitionNote.save();
 
         delete materialRequisitionNote.requestedBy;
 
