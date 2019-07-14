@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, ManyToOne, Unique, 
 import { MaterialRequisitionNoteStatus } from "./material-requisition-note-status.enum";
 import { User } from "../auth/user.entity";
 import { Item } from "../items/item.entity";
+import { MaterialRequisitionNoteItem } from "../material-requisition-note-items/material-requisition-note-item.entity";
 
 @Entity()
 @Unique(['mrnNo'])
@@ -36,6 +37,10 @@ export class MaterialRequisitionNote extends BaseEntity {
     @ManyToMany(type => Item)
     @JoinTable()
     items: Item[];
+
+    @ManyToMany(type => MaterialRequisitionNoteItem)
+    @JoinTable()
+    materialRequisitionNoteItems: MaterialRequisitionNoteItem[];
 
     @Column()
     status: MaterialRequisitionNoteStatus;

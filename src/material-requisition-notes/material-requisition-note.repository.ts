@@ -6,6 +6,7 @@ import { GetMaterialRequisitionNotesFilterDto } from "./dto/get-material-requisi
 import { User } from "../auth/user.entity";
 import { UserRoles } from "../auth/user-roles.enum";
 import { ConflictException, InternalServerErrorException, Logger } from "@nestjs/common";
+import { MaterialRequisitionNoteItem } from "../material-requisition-note-items/material-requisition-note-item.entity";
 
 @EntityRepository(MaterialRequisitionNote)
 export class MaterialRequisitionNoteRepository extends Repository<MaterialRequisitionNote> {
@@ -33,6 +34,7 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         try {
             const materialRequisitionNotes = await query
                 .leftJoinAndSelect("materialRequisitionNote.items", "item")
+                .leftJoinAndSelect("materialRequisitionNote.materialRequisitionNoteItems", "materialRequisitionNoteItems")
                 .innerJoinAndSelect("materialRequisitionNote.requestedBy", "user")
                 .getMany();
 
@@ -49,7 +51,28 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
         user: User
     ): Promise<MaterialRequisitionNote> {
-        const { mrnNo, siteLocation, items } = createMaterialRequisitionNoteDto;
+        const { mrnNo, siteLocation, items, materialRequisitionNoteItems } = createMaterialRequisitionNoteDto;
+
+        let savedMaterialRequisitionNoteItems: MaterialRequisitionNoteItem[] = [];
+
+        materialRequisitionNoteItems.forEach(async (item) => {
+            const newItem = new MaterialRequisitionNoteItem();
+            newItem.code = item.code;
+            newItem.remarks = item.remarks;
+            newItem.unit = item.unit;
+            newItem.quantity = item.quantity
+
+            try {
+                await newItem.save();
+            } catch (error) {
+                if (error.code === '23505') {   // duplicate mrn
+                    throw new ConflictException('Duplicate MRN Number');
+                } else {
+                    throw new InternalServerErrorException();
+                }
+            }
+            savedMaterialRequisitionNoteItems.push(newItem);
+        })
 
         const materialRequisitionNote = new MaterialRequisitionNote();
         materialRequisitionNote.mrnNo = mrnNo;
@@ -57,6 +80,7 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         materialRequisitionNote.requestDate = new Date();
         materialRequisitionNote.requestedBy = user;
         materialRequisitionNote.items = items;
+        materialRequisitionNote.materialRequisitionNoteItems = savedMaterialRequisitionNoteItems;
         materialRequisitionNote.status = MaterialRequisitionNoteStatus.REQUESTED;
 
         try {
