@@ -30,7 +30,7 @@ export class MaterialRequisitionNotesService {
         let found;
 
         if (isUpdateRequest || user.role === UserRoles.ADMIN) {
-            found = await this.materialRequisitionNoteRepository.findOne(id, { relations: ["items", "requestedBy"] });
+            found = await this.materialRequisitionNoteRepository.findOne(id, { relations: ["items", "requestedBy", "materialRequisitionNoteItems"] });
         } else {
             await this.materialRequisitionNoteRepository.findOne({
                 where: [
