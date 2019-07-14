@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { UserRolesValidationPipe } from './pipes/user-roles-validation.pipe';
 import { UserRoles } from './user-roles.enum';
 import { SignInCredentialsDto } from './dto/signin-credentials.dto';
-import { ApiUseTags } from '@nestjs/swagger';
+import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -17,6 +17,7 @@ export class AuthController {
     ) { }
 
     @Get('/verify')
+    @ApiBearerAuth()
     @UseGuards(AuthGuard())
     verify(
         @GetUser() user: User
@@ -25,6 +26,7 @@ export class AuthController {
     }
 
     @Get('/users')
+    @ApiBearerAuth()
     @UseGuards(AuthGuard())
     getUsers(): Promise<Object[]> {
         return this.authService.getUsers();
