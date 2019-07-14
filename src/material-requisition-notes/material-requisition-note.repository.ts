@@ -34,7 +34,7 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         try {
             const materialRequisitionNotes = await query
                 .leftJoinAndSelect("materialRequisitionNote.items", "item")
-                .leftJoinAndSelect("materialRequisitionNote.materialRequisitionNoteItems", "materialRequisitionNoteItems")
+                .leftJoinAndSelect("materialRequisitionNote.materialRequisitionNoteItems", "materialRequisitionNoteItem")
                 .innerJoinAndSelect("materialRequisitionNote.requestedBy", "user")
                 .getMany();
 
@@ -53,26 +53,7 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
     ): Promise<MaterialRequisitionNote> {
         const { mrnNo, siteLocation, items, materialRequisitionNoteItems } = createMaterialRequisitionNoteDto;
 
-        let savedMaterialRequisitionNoteItems: MaterialRequisitionNoteItem[] = [];
-
-        materialRequisitionNoteItems.forEach(async (item) => {
-            const newItem = new MaterialRequisitionNoteItem();
-            newItem.code = item.code;
-            newItem.remarks = item.remarks;
-            newItem.unit = item.unit;
-            newItem.quantity = item.quantity
-
-            try {
-                await newItem.save();
-            } catch (error) {
-                if (error.code === '23505') {   // duplicate mrn
-                    throw new ConflictException('Duplicate MRN Number');
-                } else {
-                    throw new InternalServerErrorException();
-                }
-            }
-            savedMaterialRequisitionNoteItems.push(newItem);
-        })
+        const savedMaterialRequisitionNoteItems = await this.createMaterialRequisitionNoteItems(materialRequisitionNoteItems);
 
         const materialRequisitionNote = new MaterialRequisitionNote();
         materialRequisitionNote.mrnNo = mrnNo;
@@ -98,5 +79,28 @@ export class MaterialRequisitionNoteRepository extends Repository<MaterialRequis
         delete materialRequisitionNote.requestedBy;
 
         return materialRequisitionNote;
+    }
+
+    async createMaterialRequisitionNoteItems(items: MaterialRequisitionNoteItem[]): Promise<MaterialRequisitionNoteItem[]> {
+        let savedMaterialRequisitionNoteItems: MaterialRequisitionNoteItem[] = [];
+        for await (const item of items) {
+            const newItem = new MaterialRequisitionNoteItem();
+            newItem.code = item.code;
+            newItem.remarks = item.remarks;
+            newItem.unit = item.unit;
+            newItem.quantity = item.quantity
+
+            try {
+                await newItem.save();
+            } catch (error) {
+                if (error.code === '23505') {   // duplicate mrn
+                    throw new ConflictException('Duplicate MRN Number');
+                } else {
+                    throw new InternalServerErrorException();
+                }
+            }
+            savedMaterialRequisitionNoteItems.push(newItem);
+        }
+        return savedMaterialRequisitionNoteItems;
     }
 }
