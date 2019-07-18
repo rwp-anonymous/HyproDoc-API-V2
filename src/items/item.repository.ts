@@ -15,7 +15,14 @@ export class ItemRepository extends Repository<Item> {
         const { code, storeLocation } = filterDto;
         const query = this.createQueryBuilder('item');
 
-        if (user.role === UserRoles.STORE_KEEPER || user.role === UserRoles.ADMIN) {
+        let allowedRoles: UserRoles[] = [
+            UserRoles.ADMIN,
+            UserRoles.CEO,
+            UserRoles.SITE_ENGINEER,
+            UserRoles.FOREMAN
+        ]
+
+        if (this.isRoleValid(user.role, allowedRoles)) {
             if (code) {
                 query.andWhere('(item.code LIKE :code)', { code: `%${code}%` });
             }
@@ -69,5 +76,10 @@ export class ItemRepository extends Repository<Item> {
         } else {
             throw new UnauthorizedException();
         }
+    }
+
+    private isRoleValid(role: any, allowedRoles: UserRoles[]) {
+        const idx = allowedRoles.indexOf(role);
+        return idx !== -1;
     }
 }

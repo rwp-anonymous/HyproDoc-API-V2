@@ -27,7 +27,14 @@ export class ItemsService {
     ): Promise<Item> {
         let found;
 
-        if (user.role === UserRoles.ADMIN || user.role === UserRoles.STORE_KEEPER) {
+        let allowedRoles: UserRoles[] = [
+            UserRoles.ADMIN,
+            UserRoles.CEO,
+            UserRoles.SITE_ENGINEER,
+            UserRoles.FOREMAN
+        ]
+
+        if (this.isRoleValid(user.role, allowedRoles)) {
             found = await this.itemRepository.findOne(id);
         }
 
@@ -69,5 +76,10 @@ export class ItemsService {
         await item.save();
 
         return item;
+    }
+
+    private isRoleValid(role: any, allowedRoles: UserRoles[]) {
+        const idx = allowedRoles.indexOf(role);
+        return idx !== -1;
     }
 }
