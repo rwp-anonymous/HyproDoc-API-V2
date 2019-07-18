@@ -9,6 +9,8 @@ import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { User } from '../auth/user.entity';
 import { GetUser } from '../auth/get-user.decorator';
+import { StoreLocationValidationPipe } from '../items/pipes/store-location-validation.pipe';
+import { StoreLocations } from '../items/store-location.enum';
 
 @ApiUseTags('Material Requisition Notes')
 @ApiBearerAuth()
@@ -28,8 +30,8 @@ export class MaterialRequisitionNotesController {
         return this.materialRequisitionNotesService.getMaterialRequisitionNotes(filterDto, user);
     }
 
-    @Get('/number')
-    generateMaterialRequisitionNoteNumber(): Promise<string> {
+    @Get('/nextNumber')
+    generateMaterialRequisitionNoteNumber(): Promise<{}> {
         return this.materialRequisitionNotesService.generateMaterialRequisitionNoteNumber();
     }
 
@@ -45,6 +47,7 @@ export class MaterialRequisitionNotesController {
     @UsePipes(ValidationPipe)
     createMaterialRequisitionNote(
         @Body() createMaterialRequisitionNoteDto: CreateMaterialRequisitionNoteDto,
+        @Body('siteLocation', StoreLocationValidationPipe) storeLocation: StoreLocations,
         @GetUser() user: User
     ): Promise<MaterialRequisitionNote> {
         this.logger.verbose(`User "${user.email}" creating a new material requisition note. Data: ${JSON.stringify(createMaterialRequisitionNoteDto)}`)
