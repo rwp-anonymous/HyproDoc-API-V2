@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { CreateMaterialRequisitionNoteDto } from './dto/create-material-requisition-note.dto';
 import { GetMaterialRequisitionNotesFilterDto } from './dto/get-material-requisition-notes-filter.dto';
 import { MaterialRequisitionNoteRepository } from './material-requisition-note.repository';
@@ -29,7 +29,14 @@ export class MaterialRequisitionNotesService {
     ): Promise<MaterialRequisitionNote> {
         let found;
 
-        if (isUpdateRequest || user.role === UserRoles.ADMIN) {
+        let allowedRoles: UserRoles[] = [
+            UserRoles.ADMIN,
+            UserRoles.CEO,
+            UserRoles.SITE_ENGINEER,
+            UserRoles.FOREMAN
+        ]
+
+        if (isUpdateRequest || this.isRoleValid(user.role, allowedRoles)) {
             found = await this.materialRequisitionNoteRepository.findOne(id, { relations: ["items", "requestedBy", "materialRequisitionNoteItems"] });
         } else {
             await this.materialRequisitionNoteRepository.findOne({
@@ -37,7 +44,7 @@ export class MaterialRequisitionNotesService {
                     { id, requestedById: user.id },
                     { id, approvedById: user.id },
                 ],
-                relations: ["items"]
+                relations: ["items", "materialRequisitionNoteItems"]
             });
         }
 
@@ -71,19 +78,27 @@ export class MaterialRequisitionNotesService {
     }
 
     async updateMaterialRequisitionNoteStatus(id: number, status: MaterialRequisitionNoteStatus, user: User): Promise<MaterialRequisitionNote> {
+        let allowedRoles: UserRoles[] = [
+            UserRoles.ADMIN,
+            UserRoles.SITE_ENGINEER,
+        ]
+
         const materialRequisitionNote = await this.getMaterialRequisitionNoteById(id, user, true);
 
         if (materialRequisitionNote.status === MaterialRequisitionNoteStatus.APPROVED) {
             throw new ConflictException(`Material Requisition Note with id ${id} already been approved`);
+        } else if (!this.isRoleValid(user.role, allowedRoles)) {
+            throw new UnauthorizedException();
+        } else {
+            materialRequisitionNote.status = status;
+            materialRequisitionNote.approvedBy = user;
+            materialRequisitionNote.approvedDate = new Date();
+            await materialRequisitionNote.save();
+
+            delete materialRequisitionNote.approvedBy;
+
+            return materialRequisitionNote;
         }
-        materialRequisitionNote.status = status;
-        materialRequisitionNote.approvedBy = user;
-        materialRequisitionNote.approvedDate = new Date();
-        await materialRequisitionNote.save();
-
-        delete materialRequisitionNote.approvedBy;
-
-        return materialRequisitionNote;
     }
 
     async generateMaterialRequisitionNoteNumber(): Promise<{}> {
@@ -94,5 +109,10 @@ export class MaterialRequisitionNotesService {
 
         let lastNumber = parseInt(lastMaterialRequisitionNote.mrnNo.replace(/^\D+/g, ''));
         return { nextNumber: `mrn-${lastNumber + 1}` };
+    }
+
+    private isRoleValid(role: any, allowedRoles: UserRoles[]) {
+        const idx = allowedRoles.indexOf(role);
+        return idx !== -1;
     }
 }
