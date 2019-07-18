@@ -6,6 +6,8 @@ import { AuthModule } from './auth/auth.module';
 import { ItemsModule } from './items/items.module';
 import { MaterialRequisitionNoteItemsModule } from './material-requisition-note-items/material-requisition-note-items.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { StoreRequisitionNotesModule } from './store-requisition-notes/store-requisition-notes.module';
+import { StoreRequisitionNoteItemsModule } from './store-requisition-note-items/store-requisition-note-items.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
     AuthModule,
     ItemsModule,
     MaterialRequisitionNoteItemsModule,
-    DashboardModule
+    DashboardModule,
+    StoreRequisitionNotesModule,
+    StoreRequisitionNoteItemsModule
   ]
 })
 export class AppModule { }

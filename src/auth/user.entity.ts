@@ -2,6 +2,7 @@ import { BaseEntity, Entity, PrimaryGeneratedColumn, Column, Unique, OneToMany }
 import * as bcrypt from 'bcryptjs';
 import { UserRoles } from "./user-roles.enum";
 import { MaterialRequisitionNote } from "../material-requisition-notes/material-requisition-note.entity";
+import { StoreRequisitionNote } from "../store-requisition-notes/store-requisition-note.entity";
 import { Item } from "../items/item.entity";
 
 @Entity()
@@ -33,6 +34,12 @@ export class User extends BaseEntity {
 
     @OneToMany(type => MaterialRequisitionNote, materialRequisitionNote => materialRequisitionNote.approvedBy, { eager: true })
     approvedMaterialRequisitionNotes: MaterialRequisitionNote[];
+
+    @OneToMany(type => StoreRequisitionNote, storeRequisitionNote => storeRequisitionNote.requestedBy, { eager: true })
+    requestedStoreRequisitionNotes: MaterialRequisitionNote[];
+
+    @OneToMany(type => StoreRequisitionNote, storeRequisitionNote => storeRequisitionNote.approvedBy, { eager: true })
+    approvedStoreRequisitionNotes: MaterialRequisitionNote[];
 
     @OneToMany(type => Item, item => item.createdBy, { eager: true })
     createdItems: Item[];
