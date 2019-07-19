@@ -11,7 +11,7 @@ export class DashboardController {
     constructor(private dashboardService: DashboardService) { }
 
     @Get('/summary')
-    getDashboardCounts(): Promise<number> {
+    getDashboardCounts(): Promise<{}> {
         return this.dashboardService.getDashboardCounts();
     }
 }
