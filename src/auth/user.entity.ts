@@ -6,6 +6,7 @@ import { StoreRequisitionNote } from "../store-requisition-notes/store-requisiti
 import { PurchaseOrder } from "../purchase-orders/purchase-order.entity";
 import { GoodsReceivedNote } from "../goods-received-notes/goods-received-note.entity";
 import { Item } from "../items/item.entity";
+import { GoodsIssueNote } from "../goods-issue-notes/goods-issue-note.entity";
 
 @Entity()
 @Unique(['email'])
@@ -51,6 +52,12 @@ export class User extends BaseEntity {
 
     @OneToMany(type => GoodsReceivedNote, goodsReceivedNote => goodsReceivedNote.acknowledgedBy, { eager: true })
     acknowledgedGoodsReceivedNotes: GoodsReceivedNote[];
+
+    @OneToMany(type => GoodsIssueNote, goodsIssueNote => goodsIssueNote.issuedBy, { eager: true })
+    issuedGoodsIssueNotes: GoodsIssueNote[];
+
+    @OneToMany(type => GoodsIssueNote, goodsIssueNote => goodsIssueNote.receivedBy, { eager: true })
+    receivedGoodsIssueNotes: GoodsIssueNote[];
 
     @OneToMany(type => Item, item => item.createdBy, { eager: true })
     createdItems: Item[];

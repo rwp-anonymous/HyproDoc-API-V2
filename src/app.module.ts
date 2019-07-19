@@ -12,6 +12,8 @@ import { PurchaseOrderItemsModule } from './purchase-order-items/purchase-order-
 import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 import { GoodsReceivedNotesModule } from './goods-received-notes/goods-received-notes.module';
 import { GoodsReceivedNoteItemsModule } from './goods-received-note-items/goods-received-note-items.module';
+import { GoodsIssueNotesModule } from './goods-issue-notes/goods-issue-notes.module';
+import { GoodsIssueNoteItemsModule } from './goods-issue-note-items/goods-issue-note-items.module';
 
 @Module({
   imports: [
@@ -26,7 +28,9 @@ import { GoodsReceivedNoteItemsModule } from './goods-received-note-items/goods-
     PurchaseOrderItemsModule,
     PurchaseOrdersModule,
     GoodsReceivedNotesModule,
-    GoodsReceivedNoteItemsModule
+    GoodsReceivedNoteItemsModule,
+    GoodsIssueNotesModule,
+    GoodsIssueNoteItemsModule
   ]
 })
 export class AppModule { }
