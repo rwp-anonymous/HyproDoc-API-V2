@@ -8,6 +8,8 @@ import { MaterialRequisitionNoteItemsModule } from './material-requisition-note-
 import { DashboardModule } from './dashboard/dashboard.module';
 import { StoreRequisitionNotesModule } from './store-requisition-notes/store-requisition-notes.module';
 import { StoreRequisitionNoteItemsModule } from './store-requisition-note-items/store-requisition-note-items.module';
+import { PurchaseOrderItemsModule } from './purchase-order-items/purchase-order-items.module';
+import { PurchaseOrdersModule } from './purchase-orders/purchase-orders.module';
 
 @Module({
   imports: [
@@ -18,7 +20,9 @@ import { StoreRequisitionNoteItemsModule } from './store-requisition-note-items/
     MaterialRequisitionNoteItemsModule,
     DashboardModule,
     StoreRequisitionNotesModule,
-    StoreRequisitionNoteItemsModule
+    StoreRequisitionNoteItemsModule,
+    PurchaseOrderItemsModule,
+    PurchaseOrdersModule
   ]
 })
 export class AppModule { }
