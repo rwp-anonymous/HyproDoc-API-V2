@@ -14,10 +14,17 @@ import { GoodsReceivedNotesModule } from './goods-received-notes/goods-received-
 import { GoodsReceivedNoteItemsModule } from './goods-received-note-items/goods-received-note-items.module';
 import { GoodsIssueNotesModule } from './goods-issue-notes/goods-issue-notes.module';
 import { GoodsIssueNoteItemsModule } from './goods-issue-note-items/goods-issue-note-items.module';
+import * as config from 'config';
+import { SendGridModule } from '@anchan828/nest-sendgrid';
+
+const sendgridConfig = config.get('sendgrid');
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
+    SendGridModule.forRoot({
+      apikey: process.env.SENDGRID_API_KEY || sendgridConfig.apiKey
+    }),
     MaterialRequisitionNotesModule,
     AuthModule,
     ItemsModule,
