@@ -8,6 +8,8 @@ import { ApiUseTags, ApiBearerAuth } from '@nestjs/swagger';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { ForgotPasswordCredentialsDto } from './dto/forgotpassword-credentials.dto';
+import { ResetPasswordCredentialsDto } from './dto/resetpassword-credentials.dto';
 
 @ApiUseTags('Auth')
 @Controller('auth')
@@ -50,5 +52,15 @@ export class AuthController {
     @Post('/signin')
     signIn(@Body(ValidationPipe) signInCredentialsDto: SignInCredentialsDto): Promise<{ accessToken: string }> {
         return this.authService.signIn(signInCredentialsDto);
+    }
+
+    @Post('/forgotpassword')
+    forgotPassword(@Body(ValidationPipe) forgotPasswordCredentialsDto: ForgotPasswordCredentialsDto): Promise<void> {
+        return this.authService.forgotPassword(forgotPasswordCredentialsDto);
+    }
+
+    @Post('/resetpassword')
+    resetPassword(@Body(ValidationPipe) resetPasswordCredentialsDto: ResetPasswordCredentialsDto): Promise<void> {
+        return this.authService.resetPassword(resetPasswordCredentialsDto);
     }
 }

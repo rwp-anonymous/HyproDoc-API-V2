@@ -4,6 +4,7 @@ import * as bcrypt from 'bcryptjs';
 import { User } from "./user.entity";
 import { AuthCredentialsDto } from "./dto/auth-credentials.dto";
 import { SignInCredentialsDto } from "./dto/signin-credentials.dto";
+import { ResetPasswordCredentialsDto } from "./dto/resetpassword-credentials.dto";
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
@@ -44,5 +45,15 @@ export class UserRepository extends Repository<User> {
 
     private async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);
+    }
+
+    async resetUserPassword(resetPasswordCredentialsDto: ResetPasswordCredentialsDto): Promise<void> {
+        const { email, password } = resetPasswordCredentialsDto;
+        const salt = await bcrypt.genSalt();
+        try {
+            await this.update({ email }, { password: await this.hashPassword(password, salt) })
+        } catch (error) {
+            throw new InternalServerErrorException();
+        }
     }
 }
