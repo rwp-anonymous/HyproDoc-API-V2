@@ -110,7 +110,7 @@ export class PurchaseOrdersService {
             take: 1
         });
 
-        let lastNumber = parseInt(lastPurchaseOrder.poNo.replace(/^\D+/g, ''));
+        let lastNumber = (lastPurchaseOrder) ? parseInt(lastPurchaseOrder.poNo.replace(/^\D+/g, '')) : 0;
         let standardLastNumber = (lastNumber + 1).toString().padStart(3, '0');
         return { nextNumber: `po-${standardLastNumber}` };
     }

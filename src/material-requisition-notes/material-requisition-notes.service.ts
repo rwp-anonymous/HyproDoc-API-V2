@@ -107,7 +107,7 @@ export class MaterialRequisitionNotesService {
             take: 1
         });
 
-        let lastNumber = parseInt(lastMaterialRequisitionNote.mrnNo.replace(/^\D+/g, ''));
+        let lastNumber = (lastMaterialRequisitionNote) ? parseInt(lastMaterialRequisitionNote.mrnNo.replace(/^\D+/g, '')) : 0;
         let standardLastNumber = (lastNumber + 1).toString().padStart(3, '0');
         return { nextNumber: `mrn-${standardLastNumber}` };
     }

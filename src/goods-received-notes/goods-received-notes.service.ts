@@ -80,7 +80,7 @@ export class GoodsReceivedNotesService {
             take: 1
         });
 
-        let lastNumber = parseInt(lastGoodsReceivedNote.grnNo.replace(/^\D+/g, ''));
+        let lastNumber = (lastGoodsReceivedNote) ? parseInt(lastGoodsReceivedNote.grnNo.replace(/^\D+/g, '')) : 0;
         let standardLastNumber = (lastNumber + 1).toString().padStart(3, '0');
         return { nextNumber: `grn-${standardLastNumber}` };
     }

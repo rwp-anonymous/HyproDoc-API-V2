@@ -107,7 +107,7 @@ export class GoodsIssueNotesService {
             take: 1
         });
 
-        let lastNumber = parseInt(lastGoodsIssueNote.ginNo.replace(/^\D+/g, ''));
+        let lastNumber = (lastGoodsIssueNote) ? parseInt(lastGoodsIssueNote.ginNo.replace(/^\D+/g, '')) : 0;
         let standardLastNumber = (lastNumber + 1).toString().padStart(3, '0');
         return { nextNumber: `gin-${standardLastNumber}` };
     }

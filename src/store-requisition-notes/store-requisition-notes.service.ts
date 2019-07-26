@@ -110,7 +110,7 @@ export class StoreRequisitionNotesService {
             take: 1
         });
 
-        let lastNumber = parseInt(lastStoreRequisitionNote.srnNo.replace(/^\D+/g, ''));
+        let lastNumber = (lastStoreRequisitionNote) ? parseInt(lastStoreRequisitionNote.srnNo.replace(/^\D+/g, '')) : 0;
         let standardLastNumber = (lastNumber + 1).toString().padStart(3, '0');
         return { nextNumber: `srn-${standardLastNumber}` };
     }
