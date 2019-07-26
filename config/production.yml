@@ -1,2 +1,5 @@
 db:
   synchronize: false
+
+api:
+  baseUrl: 'https://hyprodoc.com'
