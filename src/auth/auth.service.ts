@@ -2,7 +2,8 @@ import { Injectable, UnauthorizedException, NotFoundException } from '@nestjs/co
 import { UserRepository } from './user.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwtService } from '@nestjs/jwt';
-import { SendGridService } from '@anchan828/nest-sendgrid'
+import { SendGridService } from '@anchan828/nest-sendgrid';
+import * as config from 'config';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { SignInCredentialsDto } from './dto/signin-credentials.dto';
 import { JwtPayload } from './jwt-payload.interface';
@@ -21,7 +22,10 @@ export class AuthService {
     ) { }
 
     async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-        return this.userRepository.signUp(authCredentialsDto);
+        const user = await this.userRepository.signUp(authCredentialsDto);
+        if (user) {
+            this.sendResetPasswordEmail(user);
+        }
     }
 
     async signIn(signInCredentialsDto: SignInCredentialsDto): Promise<{ accessToken: string }> {
@@ -88,6 +92,41 @@ export class AuthService {
             throw new NotFoundException(`User with email ${email} not found`);
         }
 
+        this.sendResetPasswordEmail(user);
+
+        // const token = this.jwtService.sign(
+        //     {
+        //         email: user.email,
+        //         firstName: user.firstName,
+        //         lastName: user.lastName,
+        //         role: user.role,
+        //         avatarUrl: user.avatarUrl
+        //     }
+        // );
+
+        // const resetPasswordUrl = 'http://localhost:4200/resetpassword/' + token;
+        // const baseUrl = 'http://localhost:4200';
+
+        // await this.sendGridService.send({
+        //     to: email,
+        //     from: "HyproDoc No-Reply <noreply@hyprodoc.com>",
+        //     subject: "Reset Password",
+        //     html: `<p>Dear ${user.firstName}<p>` +
+        //         `<p>To reset your HyproDoc password, you will need to create a new password by clicking here: ` +
+        //         `<a href=${resetPasswordUrl} target="_blank">password reset link</a>.</p>` +
+        //         `<p>You will then be able to log in on the home page at <a href=${baseUrl}>${baseUrl}` +
+        //         '</a> using your email adress as your username and the password that you select.</p>' +
+        //         '<p><br/>Kind Regards,<br/>The HyproDoc Team</p>'
+        // });
+    }
+
+    async resetPassword(resetPasswordCredentialsDto: ResetPasswordCredentialsDto): Promise<void> {
+        return await this.userRepository.resetUserPassword(resetPasswordCredentialsDto);
+    }
+
+    private async sendResetPasswordEmail(user: User) {
+        const baseUrl = config.get('api').baseUrl;
+
         const token = this.jwtService.sign(
             {
                 email: user.email,
@@ -98,11 +137,10 @@ export class AuthService {
             }
         );
 
-        const resetPasswordUrl = 'http://localhost:4200/resetpassword/' + token;
-        const baseUrl = 'http://localhost:4200';
+        const resetPasswordUrl = `${baseUrl}/resetpassword/${token}`;
 
         await this.sendGridService.send({
-            to: email,
+            to: user.email,
             from: "HyproDoc No-Reply <noreply@hyprodoc.com>",
             subject: "Reset Password",
             html: `<p>Dear ${user.firstName}<p>` +
@@ -112,9 +150,5 @@ export class AuthService {
                 '</a> using your email adress as your username and the password that you select.</p>' +
                 '<p><br/>Kind Regards,<br/>The HyproDoc Team</p>'
         });
-    }
-
-    async resetPassword(resetPasswordCredentialsDto: ResetPasswordCredentialsDto): Promise<void> {
-        return await this.userRepository.resetUserPassword(resetPasswordCredentialsDto);
     }
 }

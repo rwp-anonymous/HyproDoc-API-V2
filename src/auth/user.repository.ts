@@ -8,7 +8,7 @@ import { ResetPasswordCredentialsDto } from "./dto/resetpassword-credentials.dto
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
-    async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+    async signUp(authCredentialsDto: AuthCredentialsDto): Promise<User> {
         const { email, firstName, lastName, password, role, avatarUrl } = authCredentialsDto;
 
         const salt = await bcrypt.genSalt();
@@ -23,6 +23,8 @@ export class UserRepository extends Repository<User> {
 
         try {
             await user.save();
+            delete user.password;
+            return user;
         } catch (error) {
             if (error.code === '23505') {   // duplicate email
                 throw new ConflictException('Email already exists');
