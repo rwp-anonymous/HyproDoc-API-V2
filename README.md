@@ -26,7 +26,7 @@
 
 ## Description
 
-[HyproDoc](https://github.com/nestjs/nest) platform.
+[HyproDoc](https://www.hyprodoc.com) platform.
 
 ## Installation
 
@@ -67,7 +67,7 @@ HyproDoc is an MIT-licensed open source project. It can grow thanks to the spons
 ## Stay in touch
 
 - Author - [Devin Herath](https://github.com/DevDHera)
-- Website - [https://hyprodoc.com](https://hyprodoc.com)
+- Website - [https://hyprodoc.com](https://www.hyprodoc.com)
 
 ## License
 
