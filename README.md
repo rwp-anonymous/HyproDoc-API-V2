@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/DevDHera/HyproDoc-Client-V2/blob/master/src/assets/images/logo/logo_new.png" width="320" alt="HyproDoc Logo" /></a>
+  <a href="http://nestjs.com/" target="blank"><img src="https://github.com/DevDHera/HyproDoc-Client-V2/blob/master/src/assets/images/logo/Logo.jpg" width="320" alt="HyproDoc Logo" /></a>
 </p>
 
 [travis-image]: https://api.travis-ci.org/nestjs/nest.svg?branch=master
@@ -62,7 +62,7 @@ $ npm run test:cov
 
 ## Support
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+HyproDoc is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://github.com/orgs/rwp-anonymous/people).
 
 ## Stay in touch
 
