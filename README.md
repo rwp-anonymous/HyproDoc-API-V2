@@ -67,7 +67,8 @@ HyproDoc is an MIT-licensed open source project. It can grow thanks to the spons
 ## Stay in touch
 
 - Author - [Devin Herath](https://github.com/DevDHera)
-- Website - [https://hyprodoc.com](https://www.hyprodoc.com)
+- Website - [https://www.hyprodoc.com](https://www.hyprodoc.com)
+- API - [https://api.hyprodoc.com](https://api.hyprodoc.com)
 
 ## License
 
