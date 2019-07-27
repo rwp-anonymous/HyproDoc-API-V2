@@ -17,13 +17,13 @@ import { GoodsIssueNoteItemsModule } from './goods-issue-note-items/goods-issue-
 import * as config from 'config';
 import { SendGridModule } from '@anchan828/nest-sendgrid';
 
-const sendgridConfig = config.get('sendgrid');
+// const sendgridConfig = config.get('sendgrid');
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(typeOrmConfig),
     SendGridModule.forRoot({
-      apikey: process.env.SENDGRID_API_KEY || sendgridConfig.apiKey
+      apikey: process.env.SENDGRID_API_KEY || config.get('sendgrid').apiKey
     }),
     MaterialRequisitionNotesModule,
     AuthModule,
